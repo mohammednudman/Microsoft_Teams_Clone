@@ -6,10 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video and Chat App</title>
+    <script src="./AgoraRTC_N-4.11.1.js"></script>
+    <script src="./main.js"></script>
 </head>
 
 <body>
-
+    <button id="join-btn">Join Stream</button>
+    <div id="stream-wrapper">
+        <div id="video-streams">
+            <div id="stream-controls">
+                <button id="leave-btn">Leave Stream</button>
+                <button id="mic-btn">Mic On</button>
+                <button id="camera-btn">Camera On</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
