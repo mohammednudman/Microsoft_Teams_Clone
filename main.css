@@ -1,13 +1,13 @@
 #video-streams {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(500px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   height: 90vh;
   width: 1400px;
 }
 
 .video-container {
   height: 50%;
-  border: 2px solid black;
+  border: 2px solid #000;
 }
 
 .video-player {
