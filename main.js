@@ -1,36 +1,29 @@
-import AgoraRTC from "agora-rtm-sdk";
-
-let options = {
-  uid: "",
-  token: "",
-};
 const APP_ID = "019d3ffc61184149a23afd37f8a35aa0";
 const TOKEN =
   "006019d3ffc61184149a23afd37f8a35aa0IAA+QhZksZpOgpjPzNxaSTlZyJ/NLSMZLt/chCglKf++vmTNKL8AAAAAEABdi2YtFeScYgEAAQAU5Jxi";
 const CHANNEL = "main";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-const client_message = AgoraRTC.createInstance(APP_ID);
 
-let localTrack = []
-let remoteUsers = {}
+let localTrack = [];
+let remoteUsers = {};
 
 let joinAndDisplayLocalMessageStream = async () => {
-  client_message.on("MessageFromPeer", function (message, peerId) {
+  client.on("MessageFromPeer", function (message, peerId) {
     document
       .getElementById("log")
       .appendChild(document.createElement("div"))
       .append("Message from: " + peerId + " Message: " + message);
   });
 
-  client_message.on("ConnectionStateChanged", function (state, reason) {
+  client.on("ConnectionStateChanged", function (state, reason) {
     document
       .createElement("log")
       .appendChild(document.createElement("div"))
       .append("State changed to : " + state + " Reason: " + reason);
   });
 
-  let channel = client_message.createChannel("demoChannel");
+  let channel = client.createChannel("demoChannel");
   channel.on("ChannelMessage", function (message, memberId) {
     document
       .getElementById("log")
@@ -55,22 +48,24 @@ let joinAndDisplayLocalMessageStream = async () => {
 };
 
 let joinAndDisplayLocalStream = async () => {
-    client.on('user-published',handleUserJoined)
-    client.on('user-left',handleUserLeft)
+  client.on("user-published", handleUserJoined);
+  client.on("user-left", handleUserLeft);
 
   let UID = await client.join(APP_ID, CHANNEL, TOKEN, null);
   localTrack = await AgoraRTC.createMicrophoneAndCameraTracks();
   let player = `<div class="video-container" id="user-container-${UID}">
                   <div class="video-player" id="user-${UID}"></div>
-                </div>`
+                </div>`;
 
-  document.getElementById("video-streams").insertAdjacentHTML("beforeend", player);
-  localTrack[1].play(`user-${UID}`)
+  document
+    .getElementById("video-streams")
+    .insertAdjacentHTML("beforeend", player);
+  localTrack[1].play(`user-${UID}`);
   await client.publish([localTrack[0], localTrack[1]]);
-  
 };
 let joinStream = async () => {
   await joinAndDisplayLocalStream();
+  await joinAndDisplayLocalMessageStream();
   document.getElementById("join-btn").style.display = "none";
   document.getElementById("stream-controls").style.display = "flex";
 };
@@ -89,7 +84,8 @@ let handleUserJoined = async (user, mediaType) => {
                 <div class="video-player" id="user-${user.uid}"></div>
               </div>`;
 
-    document.getElementById("video-streams")
+    document
+      .getElementById("video-streams")
       .insertAdjacentHTML("beforeend", player);
 
     user.videoTrack.play(`user-${user.uid}`);
@@ -101,7 +97,7 @@ let handleUserJoined = async (user, mediaType) => {
 };
 
 let handleUserLeft = async (user) => {
-  delete remoteUsers[user.uid]
+  delete remoteUsers[user.uid];
   document.getElementById(`user.container-${user.uid}`).remove();
 };
 
@@ -140,9 +136,14 @@ let toggleCamera = async (e) => {
   }
 };
 
- 
-
 document.getElementById("join-btn").addEventListener("click", joinStream);
-document.getElementById("leave-btn").addEventListener("click", leaveAndRemoveLocalStream);
+document
+  .getElementById("leave-btn")
+  .addEventListener("click", leaveAndRemoveLocalStream);
 document.getElementById("mic-btn").addEventListener("click", toggleMic);
 document.getElementById("camera-btn").addEventListener("click", toggleCamera);
+// document.getElementById("join").onclick = async function () {
+//   await channel.join().then(() => {
+//     document.getElementById("log").appendChild(document.createElement('div')).append('You have successfully joined'+channel.channelId);
+//   });
+// };
