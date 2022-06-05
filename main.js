@@ -1,12 +1,58 @@
+import AgoraRTC from "agora-rtm-sdk";
+
+let options = {
+  uid: "",
+  token: "",
+};
 const APP_ID = "019d3ffc61184149a23afd37f8a35aa0";
 const TOKEN =
   "006019d3ffc61184149a23afd37f8a35aa0IAA+QhZksZpOgpjPzNxaSTlZyJ/NLSMZLt/chCglKf++vmTNKL8AAAAAEABdi2YtFeScYgEAAQAU5Jxi";
 const CHANNEL = "main";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+const client_message = AgoraRTC.createInstance(APP_ID);
 
 let localTrack = [];
 let remoteUsers = {};
+
+let joinAndDisplayLocalMessageStream = async () => {
+  client_message.on("MessageFromPeer", function (message, peerId) {
+    document
+      .getElementById("log")
+      .appendChild(document.createElement("div"))
+      .append("Message from: " + peerId + " Message: " + message);
+  });
+
+  client_message.on("ConnectionStateChanged", function (state, reason) {
+    document
+      .createElement("log")
+      .appendChild(document.createElement("div"))
+      .append("State changed to : " + state + " Reason: " + reason);
+  });
+
+  let channel = client_message.createChannel("demoChannel");
+  channel.on("ChannelMessage", function (message, memberId) {
+    document
+      .getElementById("log")
+      .appendChild(document.createElement("div"))
+      .append("Message recieved from: " + memberId + " Message: " + message);
+  });
+
+  // Displaying Channel Member Status
+  channel.on("MemberJoined", function (memberId) {
+    document
+      .getElementById("log")
+      .appendChild(document.createElement("div"))
+      .append(memberId + " joined the channel");
+  });
+
+  channel.on("MemberLeft", function (memberId) {
+    document
+      .getElementById("log")
+      .appendChild(document.createElement("div"))
+      .append(memberId + " left the channel");
+  });
+};
 
 let joinAndDisplayLocalStream = async () => {
   client.on("user-published", handleUserJoined);
