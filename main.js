@@ -12,8 +12,8 @@ const CHANNEL = "main";
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 const client_message = AgoraRTC.createInstance(APP_ID);
 
-let localTrack = [];
-let remoteUsers = {};
+let localTrack = []
+let remoteUsers = {}
 
 let joinAndDisplayLocalMessageStream = async () => {
   client_message.on("MessageFromPeer", function (message, peerId) {
@@ -55,20 +55,20 @@ let joinAndDisplayLocalMessageStream = async () => {
 };
 
 let joinAndDisplayLocalStream = async () => {
-  client.on("user-published", handleUserJoined);
-  client.on("user-left", handleUserLeft);
+    client.on('user-published',handleUserJoined)
+    client.on('user-left',handleUserLeft)
+
   let UID = await client.join(APP_ID, CHANNEL, TOKEN, null);
   localTrack = await AgoraRTC.createMicrophoneAndCameraTracks();
   let player = `<div class="video-container" id="user-container-${UID}">
                   <div class="video-player" id="user-${UID}"></div>
-                </div>`;
-  document
-    .getElementById("video-streams")
-    .insertAdjacentHTML("beforeend", player);
-  localTrack[1].play(`user-${UID}`);
-  await client.publish([localTrack[0], localTrack[1]]);
-};
+                </div>`
 
+  document.getElementById("video-streams").insertAdjacentHTML("beforeend", player);
+  localTrack[1].play(`user-${UID}`)
+  await client.publish([localTrack[0], localTrack[1]]);
+  
+};
 let joinStream = async () => {
   await joinAndDisplayLocalStream();
   document.getElementById("join-btn").style.display = "none";
@@ -89,8 +89,7 @@ let handleUserJoined = async (user, mediaType) => {
                 <div class="video-player" id="user-${user.uid}"></div>
               </div>`;
 
-    document
-      .getElementById("video-streams")
+    document.getElementById("video-streams")
       .insertAdjacentHTML("beforeend", player);
 
     user.videoTrack.play(`user-${user.uid}`);
@@ -102,7 +101,7 @@ let handleUserJoined = async (user, mediaType) => {
 };
 
 let handleUserLeft = async (user) => {
-  delete remoteUsers[user.uid];
+  delete remoteUsers[user.uid]
   document.getElementById(`user.container-${user.uid}`).remove();
 };
 
@@ -141,9 +140,9 @@ let toggleCamera = async (e) => {
   }
 };
 
+ 
+
 document.getElementById("join-btn").addEventListener("click", joinStream);
-document
-  .getElementById("leave-btn")
-  .addEventListener("click", leaveAndRemoveLocalStream);
+document.getElementById("leave-btn").addEventListener("click", leaveAndRemoveLocalStream);
 document.getElementById("mic-btn").addEventListener("click", toggleMic);
 document.getElementById("camera-btn").addEventListener("click", toggleCamera);
